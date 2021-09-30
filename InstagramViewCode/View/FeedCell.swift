@@ -7,10 +7,18 @@
 
 
 import UIKit
+import SDWebImage
 
 class FeedCell: UICollectionViewCell {
    
     // MARK: - Properties
+    
+    var viewModel: PostViewModel? {
+        didSet{
+            configure()
+        }
+    }
+    
     
     private let profileImageView: UIImageView = {
         let iv = UIImageView()
@@ -25,7 +33,7 @@ class FeedCell: UICollectionViewCell {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = .boldSystemFont(ofSize: 13)
-        btn.setTitle("venom", for: .normal)
+        btn.setTitle("username", for: .normal)
         btn.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return btn
     }()
@@ -35,7 +43,7 @@ class FeedCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.isUserInteractionEnabled = true
-        iv.image = #imageLiteral(resourceName: "venom-7")
+
         return iv
     }()
     
@@ -153,6 +161,16 @@ class FeedCell: UICollectionViewCell {
     
     
     // MARK: - Helpers
+    
+    func configure(){
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        captionLabel.text = viewModel.caption
+        postImageView.sd_setImage(with: viewModel.imageUrl)
+    }
+    
     
     func configureActionButtons() {
         let stackView = UIStackView(arrangedSubviews: [likeButton, commentButton, shareButton])

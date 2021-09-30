@@ -13,12 +13,25 @@ private let reuseIdentifier = "Cell"
 
 class FeedController : UICollectionViewController{
     
+    // MARK: - Properties
+    
+    var posts = [Post]() {
+        didSet{
+            self.collectionView?.reloadData()
+        }
+    }
+    
     // MARK: - Lifecycle
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        PostService.fetchPosts() {
+            self.posts = $0
+        }
         configureUI()
+        
+        
     }
     
     // MARK: - Helpers
@@ -56,12 +69,13 @@ class FeedController : UICollectionViewController{
 
 extension FeedController{
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return posts.count
     }
     
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
+        cell.viewModel = PostViewModel(post: posts[indexPath.row])
         return cell
     }
 }

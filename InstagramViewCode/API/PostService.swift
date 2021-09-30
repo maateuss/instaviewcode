@@ -10,7 +10,7 @@ import Firebase
 
 struct PostService {
     
-    static func UploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion)){
+    static func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion)){
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -22,5 +22,22 @@ struct PostService {
             
         }
         
+    }
+    
+    
+    static func fetchPosts(completion: @escaping([Post]) -> Void){
+        COLLECTION_POSTS.getDocuments { snapshot,error in
+            if let error = error {
+                print("DEBUG: error getting posts \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else { return }
+            
+            let posts = documents.map{ Post(postId: $0.documentID, dictionary: $0.data()) }
+            
+            completion(posts)
+            
+        }
     }
 }

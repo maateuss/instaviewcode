@@ -55,8 +55,6 @@ class UploadPostController : UIViewController {
         super.viewDidLoad()
         configureUI()
     }
-    // MARK: - API
-
     // MARK: - Actions
     
     @objc func handleCancel(){
@@ -69,7 +67,7 @@ class UploadPostController : UIViewController {
         
         showLoad(true)
         
-        PostService.UploadPost(caption: caption, image: image) { error in
+        PostService.uploadPost(caption: caption, image: image) { error in
             self.showLoad(false)
             if let error = error {
                 print("Error sending post: \(error.localizedDescription)")
