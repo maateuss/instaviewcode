@@ -11,10 +11,17 @@ class UploadPostController : UIViewController {
     
     // MARK: - Properties
     
+    var selectedImage: UIImage? {
+        didSet{
+            photoImageView.image = selectedImage
+        }
+    }
+    
+    
     private let photoImageView: UIImageView = {
        let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
-        iv.image = #imageLiteral(resourceName: "venom-7")
+        iv.backgroundColor = .lightGray
         iv.clipsToBounds = true
         return iv
     }()
@@ -33,7 +40,6 @@ class UploadPostController : UIViewController {
         label.font = .systemFont(ofSize: 14)
         label.textColor = .lightGray
         return label
-    
     }()
     
     
@@ -51,7 +57,18 @@ class UploadPostController : UIViewController {
     }
     
     @objc func handleShare(){
-        print("DEBUG: Handle share here")
+        guard let image = photoImageView.image else { return }
+        guard let caption = captionTextView.text else { return }
+        PostService.UploadPost(caption: caption, image: image) { error in
+            if let error = error {
+                print("Error sending post: \(error.localizedDescription)")
+                return
+            }
+            
+            self.dismiss(animated: true, completion: nil)
+            
+        }
+        
     }
     
     

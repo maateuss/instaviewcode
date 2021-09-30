@@ -98,15 +98,13 @@ class MainTabController: UITabBarController {
                 
                 
                 let controller = UploadPostController()
-                
+                controller.selectedImage = selectedImage
                 let nav = UINavigationController(rootViewController: controller)
                 nav.modalPresentationStyle = .fullScreen
                 nav.navigationBar.tintColor = .black
                 nav.navigationBar.backgroundColor = .white
                 self.present(nav, animated: true, completion: nil)
                 
-                
-                print("Debug: image: \(selectedImage)")
                 
             }
         }
