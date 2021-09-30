@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import JGProgressHUD
+
 
 protocol FormViewModel {
     func updateForm()
@@ -28,6 +30,17 @@ extension UIButton {
 
 
 extension UIViewController {
+    static let hud = JGProgressHUD(style: .dark)
+    
+    func showLoad(_ show: Bool){
+        view.endEditing(true)
+        if show {
+            UIViewController.hud.show(in: view)
+        } else {
+            UIViewController.hud.dismiss()
+        }
+    }
+    
     func configureGradientLayer(){
         let gradient = CAGradientLayer()
         
