@@ -106,6 +106,7 @@ struct UserService {
         if cached.count == 1 {
             print("cached user! \(cached[0])")
             completion(cached[0])
+            return
         }
         
         COLLECTION_USERS.document(uid).getDocument { snapshot, error in
@@ -114,7 +115,10 @@ struct UserService {
                 return
             }
             
-            guard let data = snapshot?.data() else { return }
+            guard let data = snapshot?.data() else {
+                print("snap without data")
+                return
+            }
             
             let user = User(dictionary: data)
             

@@ -58,8 +58,11 @@ class FeedController : UICollectionViewController{
         let group = DispatchGroup()
         posts.forEach { post in
             group.enter()
+            print("group.enter Called!")
             UserService.fetchPostUser(uid: post.ownerUid) {
                 vm.append(PostViewModel(post: post, user: $0))
+                print("group.leave Called!")
+
                 group.leave()
             }
         }
