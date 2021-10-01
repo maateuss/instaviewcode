@@ -8,7 +8,6 @@
 
 import Firebase
 
-
 struct Post {
     var caption: String
     let imageUrl: String
@@ -16,6 +15,7 @@ struct Post {
     let ownerUid: String
     let timestamp: Timestamp
     let postId: String
+    var user: User?
     
     init(postId: String, dictionary: [String: Any]){
         self.caption = dictionary["caption"] as? String ?? ""
@@ -25,8 +25,5 @@ struct Post {
         self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
         self.postId = postId
     }
-    
-    
-    
     
 }

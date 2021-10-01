@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreMIDI
 
 private let reuseIdentifier = "Cell"
 
@@ -14,10 +15,16 @@ private let reuseIdentifier = "Cell"
 class FeedController : UICollectionViewController{
     
     // MARK: - Properties
+    var viewModels = [PostViewModel]() {
+        didSet{
+            collectionView.reloadData()
+        }
+    }
+    
     
     var posts = [Post]() {
         didSet{
-            self.collectionView?.reloadData()
+            getUsersAndMakeViewmodels()
         }
     }
     
@@ -26,13 +33,38 @@ class FeedController : UICollectionViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        PostService.fetchPosts() {
-            self.posts = $0
-        }
+        fetchPosts()
         configureUI()
         
         
     }
+    
+    // MARK: - API
+    
+    func fetchPosts(){
+        PostService.fetchPosts() {
+            self.posts = $0
+        }
+    }
+    
+    
+    func getUsersAndMakeViewmodels(){
+        var vm = [PostViewModel]()
+        let group = DispatchGroup()
+        posts.forEach { post in
+            group.enter()
+            UserService.fetchPostUser(uid: post.ownerUid) {
+                vm.append(PostViewModel(post: post, user: $0))
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main){
+            self.viewModels = vm
+        }
+        
+    }
+    
     
     // MARK: - Helpers
     
@@ -75,7 +107,8 @@ extension FeedController{
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
-        cell.viewModel = PostViewModel(post: posts[indexPath.row])
+        
+        cell.viewModel = viewModels[indexPath.row]
         return cell
     }
 }

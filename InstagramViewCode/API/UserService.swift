@@ -99,9 +99,30 @@ struct UserService {
 
     }
     
+    static var userCache = [User]()
     
-    
-    
+    static func fetchPostUser(uid: String, completion: @escaping(User) -> Void){
+        let cached = userCache.filter {$0.uid == uid}
+        if cached.count == 1 {
+            print("cached user! \(cached[0])")
+            completion(cached[0])
+        }
+        
+        COLLECTION_USERS.document(uid).getDocument { snapshot, error in
+            if let error = error {
+                print("error fetching post user: \(error)")
+                return
+            }
+            
+            guard let data = snapshot?.data() else { return }
+            
+            let user = User(dictionary: data)
+            
+            userCache.append(user)
+            
+            completion(user)
+        }
+    }
     
     
 }
