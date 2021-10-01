@@ -11,6 +11,10 @@ import CoreMIDI
 
 private let reuseIdentifier = "Cell"
 
+protocol UIFeedControllerDelegate : AnyObject {
+    func shouldReloadPosts()
+}
+
 
 class FeedController : UICollectionViewController{
     
@@ -45,6 +49,7 @@ class FeedController : UICollectionViewController{
         PostService.fetchPosts() {
             self.posts = $0
         }
+        
     }
     
     
@@ -60,7 +65,8 @@ class FeedController : UICollectionViewController{
         }
         
         group.notify(queue: .main){
-            self.viewModels = vm
+            self.viewModels = vm.sorted(by: { $0.timestamp.compare($1.timestamp) == .orderedDescending})
+            self.collectionView.refreshControl?.endRefreshing()
         }
         
     }
@@ -74,11 +80,20 @@ class FeedController : UICollectionViewController{
         
         collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
+        
+        
+        let refresher = UIRefreshControl()
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refresher
     }
     
     // MARK: - Actions
 
 
+    @objc func handleRefresh() {
+        fetchPosts()
+    }
+    
     @objc func logout(){
         do{
             try Auth.auth().signOut()
@@ -128,4 +143,8 @@ extension FeedController : UICollectionViewDelegateFlowLayout {
     }
 }
 
-
+extension FeedController : UIFeedControllerDelegate {
+    func shouldReloadPosts() {
+        self.fetchPosts()
+    }
+}

@@ -21,6 +21,8 @@ class MainTabController: UITabBarController {
         }
     }
     
+    weak var feedControllerDelegate : UIFeedControllerDelegate?
+    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -59,10 +61,13 @@ class MainTabController: UITabBarController {
         
         view.backgroundColor = .white
         self.delegate = self
-
-        let layout = UICollectionViewFlowLayout()
         
-        let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: FeedController(collectionViewLayout: layout))
+        let layout = UICollectionViewFlowLayout()
+        let feedController = FeedController(collectionViewLayout: layout)
+        self.feedControllerDelegate = feedController
+
+        
+        let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: feedController)
         
         let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchController())
         
@@ -163,5 +168,6 @@ extension MainTabController : UploadPostControllerDelegate {
     func controllerDidFinishUploadingPost(_ controller: UploadPostController) {
         selectedIndex = 0
         controller.dismiss(animated: true, completion: nil)
+        feedControllerDelegate?.shouldReloadPosts()
     }
 }

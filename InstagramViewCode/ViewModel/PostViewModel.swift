@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Firebase
 
 struct PostViewModel {
     private let post: Post
@@ -26,6 +26,10 @@ struct PostViewModel {
     
     var username: String{
         return user.username
+    }
+    
+    var timestamp: Timestamp {
+        return post.timestamp
     }
     
     
