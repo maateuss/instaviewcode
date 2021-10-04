@@ -11,6 +11,9 @@ private let cellIdentifier = "ProfileCell"
 private let headerIdentifier = "ProfileHeader"
 
 
+protocol ViewControllerReloaderDelegate : AnyObject {
+    func shouldReload()
+}
 
 class ProfileController : UICollectionViewController{
     
@@ -38,12 +41,15 @@ class ProfileController : UICollectionViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchUserStats()
-        checkIfUserIsFollowed()
-        fetchUserPosts()
+        getUserData()
         configureCollectionView()
     }
     
+    func getUserData(){
+        fetchUserStats()
+        checkIfUserIsFollowed()
+        fetchUserPosts()
+    }
     
     
     
@@ -82,11 +88,30 @@ class ProfileController : UICollectionViewController{
     }
 }
 
+
+// MARK: - ViewControllerReloaderDelegate
+
+extension ProfileController : ViewControllerReloaderDelegate {
+    func shouldReload(){
+        getUserData()
+    }
+}
+
+
 // MARK: - UICOllectionViewDataSource
+
 
 extension ProfileController{
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post :[Post] = [posts[indexPath.row]]
+        let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        feedController.isRootViewController = false
+        feedController.posts = post
+        navigationController?.pushViewController(feedController, animated: true)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

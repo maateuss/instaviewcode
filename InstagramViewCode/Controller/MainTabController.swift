@@ -22,7 +22,7 @@ class MainTabController: UITabBarController {
     }
     
     weak var feedControllerDelegate : UIFeedControllerDelegate?
-    
+    weak var profileControllerReloadDelegate : ViewControllerReloaderDelegate?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -77,6 +77,7 @@ class MainTabController: UITabBarController {
         
        
         let profileController = ProfileController(user: user)
+        self.profileControllerReloadDelegate = profileController
         let profile = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootViewController: profileController)
         
         
@@ -135,6 +136,10 @@ extension MainTabController : AuthenticationDelegate {
 extension MainTabController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         let index = viewControllers?.firstIndex(of: viewController)
+        
+        if index == 4 {
+            self.profileControllerReloadDelegate?.shouldReload()
+        }
         
         if index == 2 {
             

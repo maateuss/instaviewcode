@@ -25,6 +25,8 @@ class FeedController : UICollectionViewController{
         }
     }
     
+    var isRootViewController = true
+    
     
     var posts = [Post]() {
         didSet{
@@ -46,8 +48,10 @@ class FeedController : UICollectionViewController{
     // MARK: - API
     
     func fetchPosts(){
-        PostService.fetchPosts() {
-            self.posts = $0
+        if isRootViewController {
+            PostService.fetchPosts() {
+                self.posts = $0
+            }
         }
         
     }
@@ -82,12 +86,15 @@ class FeedController : UICollectionViewController{
         
         
         collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
+       
+        if isRootViewController {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
+            
+            let refresher = UIRefreshControl()
+            refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+            collectionView.refreshControl = refresher
+        }
         
-        
-        let refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-        collectionView.refreshControl = refresher
     }
     
     // MARK: - Actions
@@ -122,11 +129,12 @@ extension FeedController{
         return posts.count
     }
     
-    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
         
-        cell.viewModel = viewModels[indexPath.row]
+        if viewModels.count >= (indexPath.row + 1) {
+            cell.viewModel = viewModels[indexPath.row]
+        }
         return cell
     }
 }
