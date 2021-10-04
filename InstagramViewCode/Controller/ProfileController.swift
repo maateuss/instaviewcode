@@ -18,6 +18,13 @@ class ProfileController : UICollectionViewController{
     
     private var user: User
     
+    private var posts = [Post]() {
+        didSet{
+            let _ = posts.map({ print("post: \($0)")} )
+            collectionView.reloadData()
+        }
+    }
+    
     // MARK: - Lifecycle
     
     init(user: User){
@@ -33,9 +40,11 @@ class ProfileController : UICollectionViewController{
         super.viewDidLoad()
         fetchUserStats()
         checkIfUserIsFollowed()
+        fetchUserPosts()
         configureCollectionView()
-        
     }
+    
+    
     
     
     // MARK: - API
@@ -54,6 +63,13 @@ class ProfileController : UICollectionViewController{
         }
     }
     
+    func fetchUserPosts() {
+        PostService.fetchPosts(forUser: user.uid) { posts in
+            self.posts = posts
+        }
+    }
+    
+    
 
     func configureCollectionView(){
         navigationItem.title = user.username
@@ -70,11 +86,13 @@ class ProfileController : UICollectionViewController{
 
 extension ProfileController{
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
+        let vm = PostViewModel(post: posts[indexPath.row], user: user)
+        cell.viewModel = vm
         return cell
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -115,7 +133,6 @@ extension ProfileController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 240)
     }
-    
     
 }
 
