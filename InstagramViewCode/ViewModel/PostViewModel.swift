@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 
 struct PostViewModel {
-    private let post: Post
+    let post: Post
     private let user: User
 
     var imageUrl : URL? {

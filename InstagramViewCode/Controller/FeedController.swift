@@ -13,6 +13,7 @@ private let reuseIdentifier = "Cell"
 
 protocol UIFeedControllerDelegate : AnyObject {
     func shouldReloadPosts()
+    
 }
 
 
@@ -131,7 +132,7 @@ extension FeedController{
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
-        
+        cell.delegate = self
         if viewModels.count >= (indexPath.row + 1) {
             cell.viewModel = viewModels[indexPath.row]
         }
@@ -158,4 +159,15 @@ extension FeedController : UIFeedControllerDelegate {
     func shouldReloadPosts() {
         self.fetchPosts()
     }
+}
+
+extension FeedController : FeedCellDelegate {
+    func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
+        let controller = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
+        
+        navigationController?.pushViewController(controller, animated: true)
+        
+    }
+    
+    
 }
