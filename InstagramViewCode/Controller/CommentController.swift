@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import IQKeyboardManagerSwift
 import UIKit
 
 private let commentCellReuseIdentifier = "CommentCell"
@@ -31,23 +32,27 @@ class CommentController : UICollectionViewController {
         configureCollectionView()
     }
     
-    override var inputAccessoryView: UIView? {
-        get { return commentInputView}
+    override func viewWillAppear(_ animated: Bool){
+        super.viewWillAppear(animated)
+        IQKeyboardManager.shared.enable = false
+        tabBarController?.tabBar.isHidden = true
+    }
+ 
+    override func viewWillDisappear(_ animated: Bool){
+        super.viewWillDisappear(animated)
+        IQKeyboardManager.shared.enable = true
+        tabBarController?.tabBar.isHidden = false
     }
     
     override var canBecomeFirstResponder: Bool {
         return true
     }
     
-    override func viewWillAppear(_ animated: Bool){
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
+    override var inputAccessoryView: UIView? {
+        get { return commentInputView}
     }
- 
-    override func viewWillDisappear(_ animated: Bool){
-        super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
-    }
+    
+
     
     // MARK: - Helpers
     
@@ -57,7 +62,6 @@ class CommentController : UICollectionViewController {
         navigationItem.title = "Comments"
         collectionView.register(CommentCell.self, forCellWithReuseIdentifier: commentCellReuseIdentifier)
         collectionView.alwaysBounceVertical = true
-        collectionView.keyboardDismissMode = .interactive
     }
     
 }
@@ -88,7 +92,7 @@ extension CommentController : UICollectionViewDelegateFlowLayout {
 
 extension CommentController : CommentInputAcessoryViewDelegate {
     func inputView(_ inputView: CommentInputAcessoryView, wantsToSendComment: String) {
-        inputView.clearCommentTextView()
+        //inputView.clearCommentTextView()
         print("\(wantsToSendComment)")
         
     }
