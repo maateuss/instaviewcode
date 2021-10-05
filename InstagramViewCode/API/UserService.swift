@@ -109,7 +109,7 @@ struct UserService {
     
     static func fetchPostUser(uid: String, completion: @escaping(User) -> Void){
         let cached = userCache.filter {$0.uid == uid}
-        if cached.count == 1 {
+        if cached.count >= 1 {
             print("cached user! \(cached[0])")
             completion(cached[0])
             return

@@ -164,7 +164,7 @@ extension FeedController : UIFeedControllerDelegate {
 extension FeedController : FeedCellDelegate {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
         let controller = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
-        
+        controller.postId = post.postId
         navigationController?.pushViewController(controller, animated: true)
         
     }

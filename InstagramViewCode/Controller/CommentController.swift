@@ -15,6 +15,15 @@ class CommentController : UICollectionViewController {
     
     // MARK: - Properties
     
+    var comments = [Comment]() {
+        didSet{
+            getUsersAndMakeViewModels()
+        }
+    }
+    
+    var viewModels = [CommentCellViewModel]()
+    
+    
     var postId: String?
     
     private lazy var commentInputView: CommentInputAcessoryView = {
@@ -30,6 +39,7 @@ class CommentController : UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
+        fetchComments()
     }
     
     override func viewWillAppear(_ animated: Bool){
@@ -52,6 +62,38 @@ class CommentController : UICollectionViewController {
         get { return commentInputView}
     }
     
+    // MARK: - API
+    
+    func fetchComments(){
+        guard let postId = postId else {
+            return
+        }
+
+        CommentService.fetchComments(postUid: postId) { comments in
+            self.comments = comments
+        }
+    }
+    
+    func getUsersAndMakeViewModels(){
+        showLoad(true)
+        let commentsDispatchGroup = DispatchGroup()
+
+        let _ = comments.map { comment in
+            if viewModels.contains(where: { $0.uid == comment.commentUid }) { return }
+            commentsDispatchGroup.enter()
+            UserService.fetchPostUser(uid: comment.ownerUid) {user in
+                self.viewModels.append(CommentCellViewModel(comment: comment, user: user))
+                commentsDispatchGroup.leave()
+            }
+        }
+        
+        commentsDispatchGroup.notify(queue: .main){
+            self.showLoad(false)
+            self.collectionView.reloadData()
+        }
+        
+    }
+    
 
     
     // MARK: - Helpers
@@ -70,17 +112,29 @@ class CommentController : UICollectionViewController {
 
 extension CommentController{
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return viewModels.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+        let viewModel = viewModels[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: commentCellReuseIdentifier, for: indexPath) as! CommentCell
+        
+        cell.viewModel = viewModel
     
         return cell
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let viewModel = viewModels[indexPath.row]
+        let user = viewModel.user
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
 }
+
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension CommentController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -89,11 +143,17 @@ extension CommentController : UICollectionViewDelegateFlowLayout {
     }
 }
 
-
+// MARK: - CommentInputAcessoryViewDelegate
 extension CommentController : CommentInputAcessoryViewDelegate {
     func inputView(_ inputView: CommentInputAcessoryView, wantsToSendComment: String) {
-        //inputView.clearCommentTextView()
-        print("\(wantsToSendComment)")
+        guard let postId = postId else { return }
+        
+        showLoad(true)
+        
+        CommentService.uploadComment(content: wantsToSendComment, postUid: postId){error in
+            self.showLoad(false)
+            self.fetchComments()
+        }
         
     }
     

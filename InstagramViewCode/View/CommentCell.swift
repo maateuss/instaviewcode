@@ -8,10 +8,16 @@
 import UIKit
 
 
-
 class CommentCell : UICollectionViewCell {
     
     // MARK: - Properties
+    
+    var viewModel: CommentCellViewModel? {
+        didSet{
+            configure()
+        }
+    }
+    
     
     private lazy var profileImage: UIImageView = {
         let img = UIImageView()
@@ -28,10 +34,7 @@ class CommentCell : UICollectionViewCell {
         let tv = UITextView()
         tv.isScrollEnabled = false
         
-        var attrText =  NSMutableAttributedString(string: "username ", attributes: [.font : UIFont.boldSystemFont(ofSize: 14)])
-        
-        attrText.append(NSAttributedString(string:"comment...sad.a.sd.asd.asd. teteeteteste sdasd auhsdus", attributes: [.font : UIFont.systemFont(ofSize: 14)]))
-        tv.attributedText = attrText
+   
         
         return tv
     }()
@@ -61,6 +64,18 @@ class CommentCell : UICollectionViewCell {
     
     
     // MARK: - Helpers
+    
+    func configure(){
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        profileImage.sd_setImage(with: viewModel.profileImageUrl)
+ 
+        comment.attributedText = viewModel.content
+        
+        
+    }
     
     func configureUI(){
         backgroundColor = .white
