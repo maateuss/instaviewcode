@@ -18,7 +18,6 @@ class CommentCell : UICollectionViewCell {
         }
     }
     
-    
     private lazy var profileImage: UIImageView = {
         let img = UIImageView()
         
@@ -33,7 +32,7 @@ class CommentCell : UICollectionViewCell {
     private lazy var comment: UITextView = {
         let tv = UITextView()
         tv.isScrollEnabled = false
-        
+        tv.isUserInteractionEnabled = false
    
         
         return tv
@@ -74,7 +73,6 @@ class CommentCell : UICollectionViewCell {
  
         comment.attributedText = viewModel.content
         
-        
     }
     
     func configureUI(){
@@ -91,6 +89,9 @@ class CommentCell : UICollectionViewCell {
         stack.anchor(top: topAnchor, left: profileImage.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 16, paddingLeft: 10, paddingRight: 16)
         
     }
+    
+    
+    
     
 }
 

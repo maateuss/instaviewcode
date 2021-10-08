@@ -52,10 +52,23 @@ class FeedController : UICollectionViewController{
         if isRootViewController {
             PostService.fetchPosts() {
                 self.posts = $0
+                self.checkIfUserLikedPost()
             }
         }
         
     }
+    
+    func checkIfUserLikedPost(){
+        self.posts.forEach{ post in
+            PostService.checkIfUserLikedPost(postUid: post.postId) { liked in
+                if let index = self.posts.firstIndex(where: { $0.postId == post.postId } ) {
+                    self.posts[index].likedByCurrentUser = liked
+                }
+            }
+            
+        }
+    }
+    
     
     
     func getUsersAndMakeViewmodels(){
@@ -167,6 +180,28 @@ extension FeedController : FeedCellDelegate {
         controller.postId = post.postId
         navigationController?.pushViewController(controller, animated: true)
         
+    }
+    
+    func cell(_ cell: FeedCell, didTapLike post: Post){
+        
+        
+        if post.likedByCurrentUser {
+            
+            PostService.unlikePost(postUid: post.postId) { error in
+                if error != nil { return }
+                let image = #imageLiteral(resourceName: "like_unselected")
+                cell.likeButton.setImage(image, for: .normal)
+                cell.likeButton.tintColor = .black
+            }
+        } else {
+            PostService.likePost(postUid: post.postId) { error in
+                if error != nil { return }
+                let image = #imageLiteral(resourceName: "like_selected")
+                cell.likeButton.setImage(image, for:.normal)
+                cell.likeButton.tintColor = .red
+            }
+        }
+        cell.viewModel?.post.likedByCurrentUser.toggle()
     }
     
     

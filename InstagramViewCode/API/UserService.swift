@@ -82,7 +82,7 @@ struct UserService {
         var following : Int = 0
         var followers : Int = 0
         var posts: Int = 0
-
+        
         
         COLLECTION_FOLLOWING.document(uid).collection("user_following").getDocuments { (snapshot, error) in
             guard let snapshot = snapshot else { return }
@@ -102,7 +102,7 @@ struct UserService {
             }
             
         }
-
+        
     }
     
     static var userCache = [User]()
