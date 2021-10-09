@@ -175,6 +175,16 @@ extension FeedController : UIFeedControllerDelegate {
 }
 
 extension FeedController : FeedCellDelegate {
+    
+    
+    func cell(_ cell: FeedCell, openUserProfile ownerUid: String) {
+        
+        guard let user = cell.viewModel?.user else { return }
+        print("opening profilecontroller for user: \(user)")
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
         let controller = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
         controller.postId = post.postId

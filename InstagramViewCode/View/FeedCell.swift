@@ -13,6 +13,7 @@ import SDWebImage
 protocol FeedCellDelegate : AnyObject {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post)
     func cell(_ cell: FeedCell, didTapLike post: Post)
+    func cell(_ cell: FeedCell, openUserProfile ownerUid: String)
 }
 
 
@@ -174,7 +175,11 @@ class FeedCell: UICollectionViewCell {
     }
     
     @objc func didTapUsername() {
-        print("tapped username")
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        delegate?.cell(self, openUserProfile: viewModel.post.ownerUid)
     }
     
     @objc func didTapComment(){
