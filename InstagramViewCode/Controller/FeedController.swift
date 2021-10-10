@@ -209,8 +209,10 @@ extension FeedController : FeedCellDelegate {
                 let image = #imageLiteral(resourceName: "like_selected")
                 cell.likeButton.setImage(image, for:.normal)
                 cell.likeButton.tintColor = .red
+                UserService.fetchPostUser(uid: post.ownerUid) { userToBeNotified in
+                    NotificationService.uploadNotification(userToBeNotified: userToBeNotified, type: .like, post: post)
+                }
                 
-                NotificationService.uploadNotification(toUserUid: post.ownerUid, type: .like, post: post)
                 
             }
         }

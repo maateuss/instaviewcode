@@ -5,7 +5,6 @@
 //  Created by Mateus Santos on 04/10/21.
 //
 
-import Foundation
 import UIKit
 
 struct CommentCellViewModel {

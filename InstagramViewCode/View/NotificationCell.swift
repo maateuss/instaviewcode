@@ -12,6 +12,13 @@ import UIKit
 class NotificationCell: UITableViewCell {
     // MARK: - Properties
     
+    var viewModel: NotificationViewModel? {
+        didSet{
+            configure()
+        }
+    }
+    
+    
     lazy var profileImage : UIImageView  = {
        let iv = UIImageView()
         iv.backgroundColor = .lightGray
@@ -58,25 +65,7 @@ class NotificationCell: UITableViewCell {
     
     lazy var notificationMainText : UILabel = {
         let label = UILabel()
-        label.text = "Main notification text about the notification information"
-        label.textColor = .darkGray
-        label.font = .systemFont(ofSize: 14)
-        return label
-    }()
-    
-    lazy var notificationTitle : UILabel = {
-        let label = UILabel()
-        label.text = "Title"
-        label.textColor = .black
-        label.font = .boldSystemFont(ofSize: 14)
-        return label
-    }()
-    
-    lazy var timestamp : UILabel = {
-       let label = UILabel()
-        label.text = "1 day ago"
-        label.textColor = .lightGray
-        label.font = .systemFont(ofSize: 14)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -98,39 +87,37 @@ class NotificationCell: UITableViewCell {
     
     // MARK: - Helpers
     
+    func configure(){
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        
+        profileImage.sd_setImage(with: viewModel.profileImageUrl)
+        if let imgUrl = viewModel.postImageUrl {
+            postImage.sd_setImage(with: imgUrl)
+        }
+        
+        notificationMainText.attributedText = viewModel.attributedMessageText
+    }
+    
     func configureUI(){
         addSubview(profileImage)
         profileImage.centerY(inView: self)
         profileImage.setDimensions(height: 40, width: 40)
         profileImage.anchor(left:leftAnchor, paddingLeft: 16)
 
-        addSubview(notificationTitle)
-        notificationTitle.anchor(top: topAnchor, left: profileImage.rightAnchor, paddingTop: 12, paddingLeft:12)
-        addSubview(timestamp)
-        timestamp.anchor(top: topAnchor, left: notificationTitle.rightAnchor, paddingTop: 12, paddingLeft: 12)
         
         
         addSubview(postImage)
         postImage.centerY(inView: self)
-        postImage.setDimensions(height: 40, width: 40)
+        postImage.setDimensions(height: 70, width: 70)
         postImage.anchor(right: rightAnchor, paddingRight: 16)
         
-        
-        
-        
-        
-        
         addSubview(notificationMainText)
-        notificationMainText.numberOfLines = 3
         notificationMainText.lineBreakMode = .byWordWrapping
-        notificationMainText.anchor(top: notificationTitle.bottomAnchor, left: notificationTitle.leftAnchor, right: postImage.leftAnchor, paddingRight: 16)
-        
-
-        
-        
-        
-        
-        
+        notificationMainText.centerY(inView: self)
+        notificationMainText.anchor(left: profileImage.rightAnchor, right: postImage.leftAnchor, paddingLeft: 16, paddingRight: 16)
     }
     
     // MARK: - Actions
