@@ -50,7 +50,7 @@ class FeedController : UICollectionViewController{
     
     func fetchPosts(){
         if isRootViewController {
-            PostService.fetchPosts() {
+            PostService.getOnlyFollowedByPosts() {
                 self.posts = $0
                 self.checkIfUserLikedPost()
             }

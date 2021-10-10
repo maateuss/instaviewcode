@@ -108,8 +108,7 @@ extension NotificationsController : NotificationCellDelegate {
             if error != nil { return }
             cell.viewModel?.notification.isFollowedByCurrentUser = true
         }
-    }
-    
+    } 
     func cell(_ cell: NotificationCell, wantsToUnfollow uid: String) {
         UserService.unfollow(uid: uid) { error in
             if error != nil { return }
