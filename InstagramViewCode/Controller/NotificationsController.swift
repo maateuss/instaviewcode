@@ -19,6 +19,9 @@ class NotificationsController : UITableViewController{
         }
     }
     
+    
+    private let refresher = UIRefreshControl()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -38,6 +41,8 @@ class NotificationsController : UITableViewController{
         tableView.register(NotificationCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = 80
         
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl = refresher
     }
     
     // MARK: -  API
@@ -62,6 +67,14 @@ class NotificationsController : UITableViewController{
     }
     
     
+    // MARK: - Action
+    
+    @objc func handleRefresh(){
+        notifications.removeAll()
+        fetchNotifications()
+        refresher.endRefreshing()
+    }
+    
 }
 
 extension NotificationsController {
@@ -78,7 +91,12 @@ extension NotificationsController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        showLoad(true)
+        UserService.fetchPostUser(uid: notifications[indexPath.row].userId) { user in
+            self.showLoad(false)
+            let controller = ProfileController(user: user)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
     }
 }
 
@@ -86,11 +104,17 @@ extension NotificationsController {
 
 extension NotificationsController : NotificationCellDelegate {
     func cell(_ cell: NotificationCell, wantsToFollow uid: String) {
-        
+        UserService.follow(uid: uid) { error in
+            if error != nil { return }
+            cell.viewModel?.notification.isFollowedByCurrentUser = true
+        }
     }
     
     func cell(_ cell: NotificationCell, wantsToUnfollow uid: String) {
-        
+        UserService.unfollow(uid: uid) { error in
+            if error != nil { return }
+            cell.viewModel?.notification.isFollowedByCurrentUser = false
+        }
     }
     
     func cell(_ cell: NotificationCell, wantsToViewPost postid: String) {

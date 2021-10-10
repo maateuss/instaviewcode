@@ -34,11 +34,7 @@ class NotificationCell: UITableViewCell {
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         
-        iv.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer()
-        tap.addTarget(self, action: #selector(HandleProfileButton))
-        
-        iv.addGestureRecognizer(tap)
+
         
         iv.layer.cornerRadius = 20
         return iv
@@ -146,9 +142,11 @@ class NotificationCell: UITableViewCell {
         guard let viewModel = viewModel else {
             return
         }
-
-        
-        delegate?.cell(self, wantsToFollow: viewModel.notification.postId ?? "")
+        if viewModel.notification.isFollowedByCurrentUser {
+            delegate?.cell(self, wantsToUnfollow: viewModel.notification.userId)
+        } else {
+            delegate?.cell(self, wantsToFollow: viewModel.notification.userId)
+        }
     }
     
     
