@@ -9,6 +9,13 @@ import Foundation
 
 import UIKit
 
+protocol NotificationCellDelegate: AnyObject {
+    
+    func cell(_ cell: NotificationCell, wantsToFollow uid: String)
+    func cell(_ cell: NotificationCell, wantsToUnfollow uid: String)
+    func cell(_ cell: NotificationCell, wantsToViewPost postid: String)
+
+}
 class NotificationCell: UITableViewCell {
     // MARK: - Properties
     
@@ -17,6 +24,8 @@ class NotificationCell: UITableViewCell {
             configure()
         }
     }
+    
+    weak var delegate: NotificationCellDelegate?
     
     
     lazy var profileImage : UIImageView  = {
@@ -36,8 +45,8 @@ class NotificationCell: UITableViewCell {
     }()
     private lazy var followButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Loading", for:.normal)
         button.setTitleColor(.black, for: .normal)
+        button.setTitle("Loading", for: .normal)
         button.layer.cornerRadius = 3
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.5
@@ -99,31 +108,33 @@ class NotificationCell: UITableViewCell {
         }
         
         notificationMainText.attributedText = viewModel.attributedMessageText
-        
+        followButton.setTitle(viewModel.followButtonText, for: .normal)
+        followButton.backgroundColor = viewModel.followButtomBackgroundColor
+        followButton.setTitleColor(viewModel.followButtomTextColor, for: .normal)
         postImage.isHidden = viewModel.shouldHidePostImage
         followButton.isHidden = !viewModel.shouldHidePostImage
         
     }
     
     func configureUI(){
-        addSubview(profileImage)
+        contentView.addSubview(profileImage)
         profileImage.centerY(inView: self)
         profileImage.setDimensions(height: 40, width: 40)
         profileImage.anchor(left:leftAnchor, paddingLeft: 16)
 
         
         
-        addSubview(postImage)
+        contentView.addSubview(postImage)
         postImage.centerY(inView: self)
         postImage.setDimensions(height: 70, width: 70)
         postImage.anchor(right: rightAnchor, paddingRight: 16)
         
-        addSubview(followButton)
+        contentView.addSubview(followButton)
         followButton.centerY(inView: self)
         followButton.setDimensions(height: 30, width: 100)
         followButton.anchor(right: rightAnchor, paddingRight: 16)
         
-        addSubview(notificationMainText)
+        contentView.addSubview(notificationMainText)
         notificationMainText.lineBreakMode = .byWordWrapping
         notificationMainText.centerY(inView: self)
         notificationMainText.anchor(left: profileImage.rightAnchor, right: followButton.leftAnchor, paddingLeft: 16, paddingRight: 0)
@@ -132,12 +143,21 @@ class NotificationCell: UITableViewCell {
     // MARK: - Actions
     
     @objc func HandleFollowButton(){
-        print("follow button pressed")
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        
+        delegate?.cell(self, wantsToFollow: viewModel.notification.postId ?? "")
     }
     
     
     @objc func HandlePostButton(){
-        print("post button pressed")
+        guard let postid = viewModel?.notification.postId else {
+            return
+        }
+        
+        delegate?.cell(self, wantsToViewPost: postid)
     }
     
     

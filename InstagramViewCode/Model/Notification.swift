@@ -30,12 +30,12 @@ struct Notification {
     let id: String
     let userProfileImageUrl: String
     let username: String
-    
+    var isFollowedByCurrentUser: Bool = false
     init(dictionary: [String:Any]){
         self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
         self.userProfileImageUrl = dictionary["userImageUrl"] as? String ?? ""
         self.id = dictionary["id"] as? String ?? ""
-        self.userId = dictionary["userId"] as? String ?? ""
+        self.userId = dictionary["userUid"] as? String ?? ""
         self.postId = dictionary["postId"] as? String ?? ""
         self.postImageUrl = dictionary["postImageUrl"] as? String ?? ""
         self.type = NotificationType(rawValue: dictionary["type"] as? Int ?? 0) ?? .like
