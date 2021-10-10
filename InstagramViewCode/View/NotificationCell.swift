@@ -99,6 +99,10 @@ class NotificationCell: UITableViewCell {
         }
         
         notificationMainText.attributedText = viewModel.attributedMessageText
+        
+        postImage.isHidden = viewModel.shouldHidePostImage
+        followButton.isHidden = !viewModel.shouldHidePostImage
+        
     }
     
     func configureUI(){
@@ -114,10 +118,15 @@ class NotificationCell: UITableViewCell {
         postImage.setDimensions(height: 70, width: 70)
         postImage.anchor(right: rightAnchor, paddingRight: 16)
         
+        addSubview(followButton)
+        followButton.centerY(inView: self)
+        followButton.setDimensions(height: 30, width: 100)
+        followButton.anchor(right: rightAnchor, paddingRight: 16)
+        
         addSubview(notificationMainText)
         notificationMainText.lineBreakMode = .byWordWrapping
         notificationMainText.centerY(inView: self)
-        notificationMainText.anchor(left: profileImage.rightAnchor, right: postImage.leftAnchor, paddingLeft: 16, paddingRight: 16)
+        notificationMainText.anchor(left: profileImage.rightAnchor, right: followButton.leftAnchor, paddingLeft: 16, paddingRight: 0)
     }
     
     // MARK: - Actions

@@ -19,6 +19,8 @@ struct NotificationViewModel {
     var username: String { return notification.username}
     var text: String { return notification.type.notificationMessage }
     
+    var shouldHidePostImage: Bool { return notification.type == .follow }
+    
     var attributedMessageText: NSAttributedString {
         let message = NSMutableAttributedString(string: username, attributes: [.font : UIFont.boldSystemFont(ofSize: 15), .foregroundColor: UIColor.black])
         message.append(NSAttributedString(string: " \(text) ", attributes: [.font : UIFont.systemFont(ofSize: 15), .foregroundColor: UIColor.black]))

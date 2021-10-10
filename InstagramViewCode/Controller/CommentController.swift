@@ -153,6 +153,8 @@ extension CommentController : CommentInputAcessoryViewDelegate {
         CommentService.uploadComment(content: wantsToSendComment, postUid: postId){error in
             self.showLoad(false)
             self.fetchComments()
+            
+            NotificationService.uploadNotification(type: .comment, postUid: postId)
         }
         
     }

@@ -93,6 +93,14 @@ struct PostService {
         }
     }
     
+    static func fetchPostByUID(postUid: String, completion: @escaping(Post) -> Void){
+        COLLECTION_POSTS.document(postUid).getDocument { documentSnapshot, error in
+            guard let dictionary = documentSnapshot?.data() else { return }
+            completion(Post(postId: postUid, dictionary: dictionary))
+        }
+    }
+    
+    
     static func checkIfUserLikedPost(postUid: String , completion: @escaping(Bool) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
