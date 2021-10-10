@@ -44,7 +44,9 @@ class MainTabController: UITabBarController {
     
     
     func checkIfUserIsLoggedIn(){
+        
         if Auth.auth().currentUser == nil {
+            print("current user is nil")
             DispatchQueue.main.async {
                 let controller = LoginController()
                 controller.delegate = self

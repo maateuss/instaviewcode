@@ -209,6 +209,9 @@ extension FeedController : FeedCellDelegate {
                 let image = #imageLiteral(resourceName: "like_selected")
                 cell.likeButton.setImage(image, for:.normal)
                 cell.likeButton.tintColor = .red
+                
+                NotificationService.uploadNotification(toUserUid: post.ownerUid, type: .like, post: post)
+                
             }
         }
         cell.viewModel?.post.likedByCurrentUser.toggle()
