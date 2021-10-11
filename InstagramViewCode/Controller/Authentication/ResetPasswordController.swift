@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol ResetPasswordControllerDelegate: AnyObject {
+    func didSendPasswordLink(_ controller:ResetPasswordController)
+    
+}
+
 class ResetPasswordController : UIViewController {
     // MARK: - Properties
     
+    private var viewModel = ResetPasswordViewModel()
     
+    weak var delegate: ResetPasswordControllerDelegate?
     
     private let iconImage: UIImageView = {
         let iv = UIImageView(image: #imageLiteral(resourceName: "Instagram_logo_white"))
@@ -50,6 +57,8 @@ class ResetPasswordController : UIViewController {
     
     override func viewDidLoad(){
         configureUI()
+        configureNotificationObservers()
+        
     }
     
     // MARK: - Helpers
@@ -75,13 +84,41 @@ class ResetPasswordController : UIViewController {
         
     }
     
+    func configureNotificationObservers() {
+        emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+        
+    }
+    
+    
+    
     // MARK: - Action
     @objc func handleBackButton(){
         navigationController?.popViewController(animated: true)
     }
-
-    @objc func handleResetPassword(){
-        
+    
+    
+    @objc func textDidChange(sender: UITextView) {
+        viewModel.email = sender.text
+        updateForm()
     }
     
+
+    @objc func handleResetPassword(){
+        guard let email = viewModel.email else {return }
+        showLoad(true)
+        AuthService.resetPassword(withEmail: email ) { error in
+            self.showLoad(false)
+            if error != nil { return }
+            self.delegate?.didSendPasswordLink(self)
+        }
+    }
+    
+}
+
+extension ResetPasswordController : FormViewModel{
+    func updateForm() {
+        performResetButton.backgroundColor = viewModel.buttonBackgroundColor
+        performResetButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
+        performResetButton.isEnabled = viewModel.formIsValid
+    }
 }
