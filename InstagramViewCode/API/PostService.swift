@@ -118,8 +118,9 @@ struct PostService {
         
         COLLECTION_FOLLOWING.document(uid).collection("user_following").getDocuments { snapshot, error in
             guard let documents = snapshot?.documents else { return }
-            
-            let query = COLLECTION_POSTS.whereField("ownerUid", in: documents.map({$0.documentID}))
+            var followingList = documents.map({$0.documentID})
+            followingList.append(uid)
+            let query = COLLECTION_POSTS.whereField("ownerUid", in: followingList)
             query.getDocuments { postsDocuments, postError in
                 guard let postsThatCurrentUserIsFollowing = postsDocuments?.documents else { return }
                 let followingPostsList = postsThatCurrentUserIsFollowing.map({Post(postId: $0.documentID, dictionary: $0.data())})

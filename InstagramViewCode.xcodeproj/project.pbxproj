@@ -50,6 +50,7 @@
 		27F910DA27122D9B00FDB773 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F910D927122D9B00FDB773 /* Notification.swift */; };
 		27F910DC271368E800FDB773 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F910DB271368E800FDB773 /* NotificationService.swift */; };
 		27F910DE271376B200FDB773 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F910DD271376B100FDB773 /* NotificationViewModel.swift */; };
+		27F910E02713B24900FDB773 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F910DF2713B24900FDB773 /* ResetPasswordController.swift */; };
 		EA96629CBEE6A8542D7F136A /* Pods_InstagramViewCode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4150099A2A6E93C8B17206B /* Pods_InstagramViewCode.framework */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +101,7 @@
 		27F910D927122D9B00FDB773 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		27F910DB271368E800FDB773 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		27F910DD271376B100FDB773 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		27F910DF2713B24900FDB773 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		7B6970C26364F120F369ED48 /* Pods-InstagramViewCode.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramViewCode.debug.xcconfig"; path = "Target Support Files/Pods-InstagramViewCode/Pods-InstagramViewCode.debug.xcconfig"; sourceTree = "<group>"; };
 		B4150099A2A6E93C8B17206B /* Pods_InstagramViewCode.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramViewCode.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -121,6 +123,7 @@
 			children = (
 				2739476426F0B69E000D7398 /* LoginController.swift */,
 				2739476626F0B6AD000D7398 /* RegistrationController.swift */,
+				27F910DF2713B24900FDB773 /* ResetPasswordController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				27C933CA26FD60B400CEF3AA /* User.swift in Sources */,
 				27C2084E26EE416C00F1C9DB /* ProfileController.swift in Sources */,
 				276C154F270B746A00C92216 /* CommentInputAcessoryView.swift in Sources */,
+				27F910E02713B24900FDB773 /* ResetPasswordController.swift in Sources */,
 				27F910DA27122D9B00FDB773 /* Notification.swift in Sources */,
 				27C933CC26FD644600CEF3AA /* ProfileHeaderViewModel.swift in Sources */,
 				27BB6512270378880043BED1 /* InputTextView.swift in Sources */,

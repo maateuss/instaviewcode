@@ -9,6 +9,7 @@ import UIKit
 
 protocol AuthenticationDelegate: AnyObject {
     func authenticationDidComplete()
+    
 }
 
 
@@ -53,10 +54,15 @@ class LoginController : UIViewController {
         return button
     }()
     
-    private let forgotPasswordButton: UIButton = {
-        let button = UIButton(type: .system)
-        
+    private lazy var forgotPasswordButton: UILabel = {
+        let button = UILabel()
+        button.isUserInteractionEnabled = true
         button.attributedTitle(firstPart: "Forgot your password?", secondPart: "Get help signing in.")
+        let tap = UITapGestureRecognizer()
+        
+        
+        tap.addTarget(self, action: #selector(handleRestorePassword))
+        button.addGestureRecognizer(tap)
         
         
         return button
@@ -91,41 +97,6 @@ class LoginController : UIViewController {
         
     }
     
-    
-    // MARK: - Helpers
-    
-    func configureUI(){
-        view.backgroundColor = .white
-        navigationController?.navigationBar.isHidden = true
-        navigationController?.navigationBar.barStyle = .black
-        configureGradientLayer()
-        
-        view.addSubview(iconImage)
-        iconImage.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: 32, width: 120,  height: 80)
-        iconImage.centerX(inView: view)
-        
-        
-        let stack = UIStackView(arrangedSubviews: [emailTextField, passwordTextField, loginButton, forgotPasswordButton])
-        stack.axis = .vertical
-        stack.spacing = 20
-        
-        view.addSubview(stack)
-        stack.anchor(top: iconImage.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 32, paddingLeft: 32, paddingRight: 32)
-        
-        view.addSubview(dontHaveAccountButton)
-        dontHaveAccountButton.centerX(inView: view)
-        dontHaveAccountButton.anchor( bottom: view.safeAreaLayoutGuide.bottomAnchor)
-        
-    }
-    
-    
-    func configureNotificationObservers() {
-        emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        
-    }
-    
-    
     @objc func textDidChange(sender: UITextView) {
         
         if sender == emailTextField {
@@ -134,6 +105,11 @@ class LoginController : UIViewController {
             viewModel.password = sender.text
         }
         updateForm()
+    }
+    
+    @objc func handleRestorePassword(){
+        let controller = ResetPasswordController()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc func handleLogin(){
@@ -152,6 +128,46 @@ class LoginController : UIViewController {
         
         
     }
+
+    
+    // MARK: - Helpers
+    
+    func configureUI(){
+        view.backgroundColor = .white
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.barStyle = .black
+        configureGradientLayer()
+        
+        view.addSubview(iconImage)
+        iconImage.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: 32, width: 120,  height: 80)
+        iconImage.centerX(inView: view)
+        
+        
+        let stack = UIStackView(arrangedSubviews: [emailTextField, passwordTextField, loginButton])
+        stack.axis = .vertical
+        stack.spacing = 20
+        
+        view.addSubview(stack)
+        stack.anchor(top: iconImage.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 32, paddingLeft: 32, paddingRight: 32)
+        
+        
+        view.addSubview(forgotPasswordButton)
+        forgotPasswordButton.anchor(top: stack.bottomAnchor, left: stack.leftAnchor, right: stack.rightAnchor, paddingTop: 20)
+        forgotPasswordButton.lineBreakMode = .byWordWrapping
+        
+        view.addSubview(dontHaveAccountButton)
+        dontHaveAccountButton.centerX(inView: view)
+        dontHaveAccountButton.anchor( bottom: view.safeAreaLayoutGuide.bottomAnchor)
+        
+    }
+    
+    
+    func configureNotificationObservers() {
+        emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+        passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+        
+    }
+    
 
 }
 
